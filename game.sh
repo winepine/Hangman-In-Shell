@@ -83,7 +83,7 @@ function create_puzzle_string()
 	for ((i=0; i<half_word_size; i++))
 	do
 		declare -i index=$(( RANDOM % ${#puzzle_word[@]} ))
-		if [[ ${puzzle_word[index]} != [[:space:]] || ${puzzle_word[index]} != '?' || ${puzzle_word[index]} != "'" || ${puzzle_word[index]} != "." || ${puzzle_word[index]} != ' ' ]]
+		if [[ ${puzzle_word[index]} != [[:space:]] ]] || [[ ${puzzle_word[index]} != '?' ]] || [[ ${puzzle_word[index]} != "'" ]] || [[ ${puzzle_word[index]} != "." ]] || [[ ${puzzle_word[index]} != ' ' ]] || [[ $input == 32 ]]
 		then
 			puzzle_word[index]='_'
 		fi
@@ -115,31 +115,26 @@ function game_play()
 }
 
 # <summary>
-#	* Reads the character and searches if the input is an alphabet/space or not
+#	* Reads the character and searches if the input is an alphabet or not
 #	* Prompts the program to then select an index to where the character should be filled
 # </summary>
 function get_input_and_verify()
 {
-	local input
+	local -c input
 	read -p 'Input Alphabet: ' input
 	local find_status=false
 	for letter in {a..z}
 	do
 		if [[ $letter == $input ]]
 		then
-			find_status=true
-			select_index_and_verify $input
-			break
-		elif [[ $input == [[:space:]] || $input == " " ]]
-		then
-			find_status=true
+			(( find_status=true ))
 			select_index_and_verify $input
 			break
 		fi
 	done
 	if [[ $find_status == false ]]
 	then
-		echo 'Input not in range of the alphabets!\n'
+		echo "Input not in range of the alphabets!\n"
 		get_input_and_verify
 	fi
 }
