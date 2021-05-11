@@ -120,7 +120,7 @@ function game_play()
 # </summary>
 function get_input_and_verify()
 {
-	local -c input
+	local input
 	read -p 'Input Alphabet: ' input
 	local find_status=false
 	for letter in {a..z}
