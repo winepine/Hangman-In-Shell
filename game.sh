@@ -16,7 +16,7 @@
 
 current_user=""
 total_rounds_won=0
-total_rounds_per_mode=1
+total_rounds_per_mode=4
 current_round=0
 words_list=()
 word=""
@@ -356,8 +356,12 @@ function game_status_bar()
 function results()
 {
 	game_status_bar
-	echo "Total Rounds Won: ${total_rounds_won}/9\n"
+	local -i total
+	total=$(( $total_rounds_per_mode * 3 ))
+	echo "Total Rounds Won: ${total_rounds_won}/${total}\n"
+	echo "${current_user}		${total_rounds_won}/${total}\n" >> HighScores.txt
 }
+
 
 
 #	*** Utility  Functions End ***
