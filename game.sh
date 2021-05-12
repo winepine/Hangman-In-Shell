@@ -18,6 +18,8 @@ current_user=""
 total_rounds_won=0
 total_rounds_per_mode=4
 current_round=0
+total_chances=6
+current_chances=$total_chances
 words_list=()
 word=""
 puzzle_word=()
@@ -25,7 +27,7 @@ word_found=false
 current_score=0
 current_mode=1
 current_mode_name='Easy'
-total_rounds=$(( $total_rounds_per_mode * 3 ))
+total_rounds=0
 
 
 #	*** Global Variables End ***
@@ -109,20 +111,26 @@ function pick_random_word_from_list()
 # </summary>
 function create_puzzle_string()
 {
-	half_word_size=$(( ${#word[@]} / 2 ))
-	puzzle_word=("${word[@]}")
-	for ((i=0; i<half_word_size; i++))
+	local status_letter_found=false
+	for ((i=0; i<${#word[@]}; i++))
 	do
-		declare -i index=$(( RANDOM % ${#puzzle_word[@]} ))
 		for letter in {a..z}
 			do
-			if [[ $letter == ${puzzle_word[index]} ]]
+			if [[ $letter == ${word[i]} ]]
 			then
-				puzzle_word[index]='_'
+				status_letter_found=true
+				puzzle_word[i]='_'
+				break
+			else
+				status_letter_found=false
 			fi
 		done
+		if [[ $status_letter_found == false ]]
+		then
+			puzzle_word[i]=${word[i]}
+		fi
+		status_letter_found=false
 	done
-	echo ${puzzle_word[@]}
 }
 
 
@@ -135,59 +143,58 @@ function create_puzzle_string()
 
 
 # <summary>
-#	* Prompts a status bar at the top indicating the current puzzle word, currrent difficulty level and current round
-#	* Gets alphabet and index from the user and performs its mandatry checks
+#	* Prompts a status bar at the top indicating the current puzzle word, current chances, currrent difficulty level and current round
+#	* Gets alphabet fills the puzzle if the alphabet matches, or deducts chances
 #	* Checks if the word has any blank spaces left which are yet to be filled
 # </summary>
 function game_play()
 {
 	clear
 	game_status_bar
-	get_input_and_verify
+	get_input
+	check_chances
 	check_if_blank_spaces_remain
 }
 
 # <summary>
-#	* Reads the character and searches if the input is an alphabet or not
-#	* Prompts the program to then select an index to where the character should be filled
+#	* Reads the input and searches from the word
+#	* If the input matches the character from the word, It will reveal that character from the puzzle 
+#	* Else death chances increase
 # </summary>
-function get_input_and_verify()
+function get_input()
 {
 	local input
 	read -p 'Input Alphabet: ' input
 	local find_status=false
-	for letter in {a..z}
+	for (( i=0; i<${#word[@]}; i++ ))
 	do
-		if [[ $letter == $input ]]
+		if [[ ${word[i]} == $input ]]
 		then
-			(( find_status=true ))
-			select_index_and_verify $input
-			break
+			find_status=true
+			puzzle_word[i]=$input
 		fi
 	done
 	if [[ $find_status == false ]]
 	then
-		printf "Input not in range of the alphabets!\n"
-		get_input_and_verify
+		printf "Oops chance deducted!\n"
+		(( current_chances-- ))
 	fi
 }
 
+
 # <summary>
-#	* Selects an index from the user where there is blank space and assigns that character to that empty space
+#	* Checks if chances are below 0
+#	* If yes then it will iterate to the next round, and no marks would be given
+#	* Else it will do nothing 
 # </summary>
-function select_index_and_verify()
+function check_chances()
 {
-	local -i index
-	read -p 'Input Index: ' index
-	if (( $index >=0 && $index <= ${#puzzle_word[@]} ))
+	if (( $current_chances < 0 ))
 	then
-		if [[ ${puzzle_word[$index]} == '_' ]]
-		then
-			puzzle_word[$index]=$1
-		else
-			printf "Index doesnt match a blank space, try again!\n"
-			select_index_and_verify $1
-		fi
+		clear
+		printf "OOPs, You are hanged!\n"
+		wait_for_key_press
+		iterate_to_next_round
 	fi
 }
 
@@ -215,18 +222,22 @@ function select_game_mode()
 {
 	case $1 in 
 		1)
+			total_rounds=$total_rounds_per_mode
 			mapfile -t words_list < Easy.txt
 			current_mode=1
 			;;
 		2)
+			total_rounds=$(( $total_rounds_per_mode * 2 ))
 			mapfile -t words_list < Medium.txt
 			current_mode=2
 			;;
 		3)
+			total_rounds=$(( $total_rounds_per_mode * 3 ))
 			mapfile -t words_list < Hard.txt
 			current_mode=3
 			;;
 		4)
+			total_rounds=$total_rounds_per_mode
 			mapfile -t words_list < Custom.txt
 			current_mode=4
 			;;
@@ -292,6 +303,7 @@ function iterate_to_next_round()
 			printf "Wind percentage below 60, thus can't be promoted to next round!\n"
 		fi
 	fi
+	current_chances=$total_chances
 	word_found=false
 	initializer_function $current_mode
 }
@@ -388,15 +400,31 @@ function game_status_bar()
 {
 	determine_current_mode
 	store_global_variables
-	echo "${puzzle_word[@]} 							Current Mode: ${current_mode_name}	Current Score: ${current_score}\n"
+	echo "${puzzle_word[@]}		Current Chances Left: ${current_chances}	Current Mode: ${current_mode_name}	Current Score: ${current_score}	Current Round: ${current_round} \n"
 }
 
 
 function results()
 {
-	game_status_bar
+	clear
 	echo "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
 	echo "${current_user}		${total_rounds_won}/${total_rounds}\n" >> HighScores.txt
+	wait_for_key_press
+	menu
+}
+
+function wait_for_key_press()
+{
+	printf "Press any key to continue\n"
+	while [ true ] ; do
+		read -t 3 -n 1
+		if [ $? = 0 ]
+		then
+			break
+		else
+			printf "Waiting for the keypress\n"
+		fi
+	done
 }
 
 function display_score_history()
@@ -411,6 +439,7 @@ function store_global_variables()
 	rm TempData
 	touch TempData
 	echo "${current_user}" >> TempData
+	echo "${current_chances}" >> TempData
 	echo "${current_round}" >> TempData
 	echo "${current_score}" >> TempData
 	echo "${current_mode_name}" >> TempData
