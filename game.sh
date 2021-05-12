@@ -23,7 +23,6 @@ current_chances=$total_chances
 words_list=()
 word=""
 puzzle_word=()
-word_found=false
 current_score=0
 current_mode=1
 current_mode_name='Easy'
@@ -292,8 +291,6 @@ function iterate_to_next_round()
 # </summary>
 function add_current_score()
 {
-	if [[ $word_found == true ]]
-	then
 	case $current_mode in 
 		1)
 			(( current_score+=10 ))
@@ -308,7 +305,6 @@ function add_current_score()
 			(( current_score+=15 ))
 			;;
 	esac
-	fi
 }
 
 # <summary>
