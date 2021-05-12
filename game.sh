@@ -374,7 +374,7 @@ function determine_current_mode()
 	esac
 }
 
-function display_alphabets()
+function print_keyboard()
 {
 	echo {a..z}
 }
