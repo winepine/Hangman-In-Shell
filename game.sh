@@ -16,7 +16,7 @@
 
 current_user=""
 total_rounds_won=0
-total_rounds_per_mode=1
+total_rounds_per_mode=4
 current_round=0
 words_list=()
 word=""
@@ -25,6 +25,7 @@ word_found=false
 current_score=0
 current_mode=1
 current_mode_name='Easy'
+total_rounds=$(( $total_rounds_per_mode * 3 ))
 
 
 #	*** Global Variables End ***
@@ -104,7 +105,7 @@ function pick_random_word_from_list()
 }
 
 # <summary>
-#	* Creates puzzle from a word, trying to neglect spaces, question marks etc from the word
+#	* Creates puzzle from a word, only alphabets would be filled blank
 # </summary>
 function create_puzzle_string()
 {
@@ -378,9 +379,15 @@ function display_alphabets()
 	echo {a..z}
 }
 
+# <summary>
+#	* Determines current difficulty mode
+#	* Stores global variable data in a file
+#	* displays status bar
+# </summary>
 function game_status_bar()
 {
 	determine_current_mode
+	store_global_variables
 	echo "${puzzle_word[@]} 							Current Mode: ${current_mode_name}	Current Score: ${current_score}\n"
 }
 
@@ -388,10 +395,8 @@ function game_status_bar()
 function results()
 {
 	game_status_bar
-	local -i total
-	total=$(( $total_rounds_per_mode * 3 ))
-	echo "Total Rounds Won: ${total_rounds_won}/${total}\n"
-	echo "${current_user}		${total_rounds_won}/${total}\n" >> HighScores.txt
+	echo "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
+	echo "${current_user}		${total_rounds_won}/${total_rounds}\n" >> HighScores.txt
 }
 
 function display_score_history()
@@ -400,6 +405,22 @@ function display_score_history()
 	printf "%s" "${score_history[@]}"
 	printf "\n"
 }
+
+function store_global_variables()
+{
+	rm TempData
+	touch TempData
+	echo "${current_user}" >> TempData
+	echo "${current_round}" >> TempData
+	echo "${current_score}" >> TempData
+	echo "${current_mode_name}" >> TempData
+	echo "${puzzle_word[@]}" >> TempData
+	echo "${word[@]}" >> TempData
+	echo "${total_rounds_won}" >> TempData 
+	echo "${total_rounds_per_mode}" >> TempData
+	echo "${total_rounds}" >> TempData
+}
+
 #	*** Utility  Functions End ***
 
 main
