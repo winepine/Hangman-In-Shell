@@ -16,7 +16,7 @@
 
 current_user=""
 total_rounds_won=0
-total_rounds_per_mode=4
+total_rounds_per_mode=1
 current_round=0
 total_chances=6
 current_chances=$total_chances
@@ -209,7 +209,9 @@ function check_if_blank_spaces_remain()
 	then
 		game_play
 	else
-		check_if_solved_puzzle_matches			
+		(( total_rounds_won++ ))
+		add_current_score
+		iterate_to_next_round
 	fi
 }
 
@@ -255,29 +257,6 @@ function select_game_mode()
 #	*** Win/Lose determining  Functions Start ***
 #	Function: Functions to determine the winning/losing results of the player
 
-
-# <summary>
-#	* Checks if the puzzle is solved correctly or not
-#	* If its solved correctly scores according to the difficulty level will be added
-#	* Then it a new puzzle will be assigned for the next round
-# </summary>
-function check_if_solved_puzzle_matches()
-{
-	for ((i=0; i<${#word[@]}; i++))
-	do
-		if [[ ${word[$i]} !=  ${puzzle_word[$i]} ]]
-		then
-			word_found=false
-			(( total_rounds_won++ ))
-			echo "Correct Word: ${word[@]}\n"
-			break
-		else
-			word_found=true
-		fi
-	done
-	add_current_score
-	iterate_to_next_round
-}
 
 # <summary>
 #	* A new puzzle will be assigned if a person has completed a round
