@@ -1,6 +1,9 @@
 #!/bin/bash
 
 
+#	Current Bugs:
+#		* Space Input Or Neglecting Spaces in string
+
 #	*** Documentation ***
 #		* This program would be divided into following modules:
 #			* Global Variables
@@ -11,12 +14,13 @@
 #
 
 
+
 #	*** Global Variables Start ***
 #	Function: Variables to store data that will be used in between the program
 
 current_user=""
 total_rounds_won=0
-total_rounds_per_mode=4
+total_rounds_per_mode=1
 current_round=0
 words_list=()
 word=""
@@ -35,13 +39,43 @@ current_mode_name='Easy'
 
 function main()
 {
+	clear
 	read -p "Enter UserName: " current_user
+	menu
+}
+
+
+function menu()
+{
 	local -i option
-	echo '1. Easy\n2. Medium\n3. Hard\n4. Custom\n'
+	printf "1. Game Difficulty\n2. Score History\n3. Exit\n"
+	read -p 'Select Mode: ' option
+	case $option in 
+		1)
+			clear
+			game_mode_menu
+			;;
+		2)
+			clear
+			display_score_history
+			;;
+		3)
+			exit
+			;;
+		*)
+			printf "Option out of bounds, Please try again!\n"
+			;;
+	esac
+	menu
+}
+
+function game_mode_menu()
+{
+	local -i option
+	printf "1. Easy\n2. Medium\n3. Hard\n4. Custom\n"
 	read -p 'Select Mode: ' option
 	initializer_function $option
 }
-
 
 # <summary>
 #	* Player Selects difficulty level of the puzzle
@@ -49,6 +83,7 @@ function main()
 #	* Program creates a copy of that word and makes a puzzle out of it
 #	* Gameplay begins
 # </summary>
+
 function initializer_function()
 {
 	select_game_mode $1
@@ -134,7 +169,7 @@ function get_input_and_verify()
 	done
 	if [[ $find_status == false ]]
 	then
-		echo "Input not in range of the alphabets!\n"
+		printf "Input not in range of the alphabets!\n"
 		get_input_and_verify
 	fi
 }
@@ -152,7 +187,7 @@ function select_index_and_verify()
 		then
 			puzzle_word[$index]=$1
 		else
-			echo 'Index doesnt match a blank space, try again!\n'
+			printf "Index doesnt match a blank space, try again!\n"
 			select_index_and_verify $1
 		fi
 	fi
@@ -198,8 +233,8 @@ function select_game_mode()
 			current_mode=4
 			;;
 		*)
-			echo 'Option out of bounds, Please try again!\n'
-			main
+			printf "Option out of bounds, Please try again!\n"
+			game_mode_menu
 			;;
 	esac
 }
@@ -225,7 +260,7 @@ function check_if_solved_puzzle_matches()
 		then
 			word_found=false
 			(( total_rounds_won++ ))
-			echo "Correct Word: ${word[@]}"
+			echo "Correct Word: ${word[@]}\n"
 			break
 		else
 			word_found=true
@@ -249,14 +284,14 @@ function iterate_to_next_round()
 		check_if_should_be_promoted_to_next_mode
 		if [[ $? == 1 ]]
 		then
-			echo 'Congratulation promoted to next mode!\n'
+			printf "Congratulation promoted to next mode!\n"
 			(( current_mode++ ))
 			if (( $current_mode >= total_rounds_per_mode ))
 			then
 				results
 			fi
 		else
-			echo "Wind percentage below 60, thus can't be promoted to next round!\n"
+			printf "Wind percentage below 60, thus can't be promoted to next round!\n"
 		fi
 	fi
 	word_found=false
@@ -362,9 +397,12 @@ function results()
 	echo "${current_user}		${total_rounds_won}/${total}\n" >> HighScores.txt
 }
 
-
-
+function display_score_history()
+{
+	mapfile score_history < HighScores.txt
+	printf "%s" "${score_history[@]}"
+	printf "\n"
+}
 #	*** Utility  Functions End ***
-
 
 main
