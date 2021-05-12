@@ -1,9 +1,5 @@
 #!/bin/bash
 
-
-#	Current Bugs:
-#		* Space Input Or Neglecting Spaces in string
-
 #	*** Documentation ***
 #		* This program would be divided into following modules:
 #			* Global Variables
@@ -43,7 +39,6 @@ function main()
 	read -p "Enter UserName: " current_user
 	menu
 }
-
 
 function menu()
 {
@@ -118,11 +113,13 @@ function create_puzzle_string()
 	for ((i=0; i<half_word_size; i++))
 	do
 		declare -i index=$(( RANDOM % ${#puzzle_word[@]} ))
-		if [[ ${puzzle_word[index]} != [[:space:]] ]] || [[ ${puzzle_word[index]} != '?' ]] || [[ ${puzzle_word[index]} != "'" ]] || [[ ${puzzle_word[index]} != "." ]] || [[ ${puzzle_word[index]} != ' ' ]] || [[ $input == 32 ]]
-		then
-			puzzle_word[index]='_'
-		fi
-
+		for letter in {a..z}
+			do
+			if [[ $letter == ${puzzle_word[index]} ]]
+			then
+				puzzle_word[index]='_'
+			fi
+		done
 	done
 	echo ${puzzle_word[@]}
 }
