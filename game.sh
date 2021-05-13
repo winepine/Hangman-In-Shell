@@ -278,7 +278,7 @@ function iterate_to_next_round()
 				results
 			fi
 		else
-			printf "Wind percentage below 50, thus can't be promoted to next round!\n"
+			printf "Win percentage below 50, thus can't be promoted to next round!\n"
 		fi
 	fi
 	current_chances=$total_chances
