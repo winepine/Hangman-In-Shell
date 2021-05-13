@@ -31,7 +31,6 @@ total_rounds=0
 
 #	*** Global Variables End ***
 
-
 #	*** Starting Functions Start ***
 #	Function: Functions necessary for the initialzation of the components of the game
 
@@ -92,13 +91,14 @@ function initializer_function()
 
 # <summary>
 #	* A random word is selected from the list
+#	* Checks if the word is just blank, it then recalls the function again
 #	* Converts that word from string to array
 # </summary>
 function pick_random_word_from_list()
 {
 	list_size=${#words_list[@]}
 	word=${words_list[$(( ( RANDOM % $list_size + 1 )))]}
-	if [[ -z "${word// }" ]] 
+	if [[ "$word" =~ ^[[:blank:]]+$ ]]
 	then
 		pick_random_word_from_list
 	fi
@@ -278,7 +278,7 @@ function iterate_to_next_round()
 				results
 			fi
 		else
-			printf "Wind percentage below 60, thus can't be promoted to next round!\n"
+			printf "Wind percentage below 50, thus can't be promoted to next round!\n"
 		fi
 	fi
 	current_chances=$total_chances
