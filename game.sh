@@ -27,6 +27,7 @@ current_score=0
 current_mode=1
 current_mode_name='Easy'
 total_rounds=0
+used_words=()
 
 
 #	*** Global Variables End ***
@@ -90,6 +91,30 @@ function initializer_function()
 
 
 # <summary>
+#	* Creates a log list where every used word is stored
+#	* Necessary for always allowing new words to flow
+# </summary>
+function check_if_word_used()
+{
+	if [[ ${#used_words[@]} == 0 ]]
+	then
+		used_words[0]=$word
+		return
+	fi
+	for(( i=0; i< ${#used_words[@]}; i++ ))	
+	do
+		if [[ $word == ${used_words[i]} ]]
+		then
+			pick_random_word_from_list
+		fi
+	done
+	(( i++ ))
+	used_words[i]=$word
+	return
+}
+
+
+# <summary>
 #	* A random word is selected from the list
 #	* Checks if the word is just blank, it then recalls the function again
 #	* Converts that word from string to array
@@ -98,7 +123,8 @@ function pick_random_word_from_list()
 {
 	list_size=${#words_list[@]}
 	word=${words_list[$(( ( RANDOM % $list_size + 1 )))]}
-	if [[ "$word" =~ ^[[:blank:]]+$ ]]
+	check_if_word_used
+	if [[ $word =~ ^[[:blank:]]+$ ]]  || [[ ! $word = *[!\ ]* ]]
 	then
 		pick_random_word_from_list
 	fi
@@ -112,14 +138,16 @@ function create_puzzle_string()
 {
 	puzzle_word=()
 	local status_letter_found=false
+	local -i number_of_blank_spaces=0
 	for ((i=0; i<${#word[@]}; i++))
-
+	do
 		for letter in {a..z}
 			do
 			if [[ $letter == ${word[i]} ]]
 			then
 				status_letter_found=true
 				puzzle_word[i]='_'
+				(( number_of_blank_spaces++ ))
 				break
 			else
 				status_letter_found=false
@@ -131,6 +159,10 @@ function create_puzzle_string()
 		fi
 		status_letter_found=false
 	done
+	if (( $number_of_blank_spaces <= 1 ))
+	then
+		initializer_function
+	fi
 }
 
 
