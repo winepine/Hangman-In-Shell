@@ -306,7 +306,7 @@ function iterate_to_next_round()
 		then
 			printf "Congratulation promoted to next mode!\n"
 			(( current_mode++ ))
-			if (( $current_mode >= total_rounds_per_mode ))
+			if (( $current_mode >= 3 ))
 			then
 				results
 			fi
