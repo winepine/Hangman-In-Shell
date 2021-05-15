@@ -110,9 +110,10 @@ function pick_random_word_from_list()
 # </summary>
 function create_puzzle_string()
 {
+	puzzle_word=()
 	local status_letter_found=false
 	for ((i=0; i<${#word[@]}; i++))
-	do
+
 		for letter in {a..z}
 			do
 			if [[ $letter == ${word[i]} ]]
@@ -383,7 +384,7 @@ function results()
 {
 	clear
 	echo "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
-	echo "${current_user}		${total_rounds_won}/${total_rounds}\n" >> HighScores.txt
+	echo "${current_user}		${total_rounds_won}/${total_rounds}" >> HighScores.txt
 	wait_for_key_press
 	menu
 }
