@@ -415,8 +415,9 @@ function game_status_bar()
 function results()
 {
 	clear
-	echo "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
-	echo "${current_user}		${total_rounds_won}/${total_rounds}" >> HighScores.txt
+	printf "Total Score: ${current_score}\n"
+	printf "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
+	echo "${current_user}		${current_score}" >> HighScores.txt
 	wait_for_key_press
 	menu
 }
