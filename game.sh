@@ -18,7 +18,7 @@ source gui.sh
 
 current_user=""
 total_rounds_won=0
-total_rounds_per_mode=4
+total_rounds_per_mode=1
 current_round=0
 total_chances=6
 current_chances=$total_chances
@@ -377,7 +377,8 @@ function results()
 {
 	printf "Total Score: ${current_score}\n"
 	printf "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
-	prompt 'Total Score: ${current_score} | Total Rounds Won: ${total_rounds_won} ${total_rounds}'
+	prompt "Total Score: ${current_score} | Total Rounds Won: ${total_rounds_won} ${total_rounds}"
+	main
 	echo "${current_score}" >> HighScores.txt
 	# Final result player ka show krne kebaad, start screen pe wapis la
 }
