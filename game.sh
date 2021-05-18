@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source gui.sh
 #	*** Documentation ***
 #		* This program would be divided into following modules:
 #			* Global Variables
@@ -34,43 +34,14 @@ used_words=()
 
 #	*** Starting Functions Start ***
 #	Function: Functions necessary for the initialzation of the components of the game
-
-function main()
-{
-	clear
-	read -p "Enter UserName: " current_user
-	menu
-}
-
-function menu()
-{
-	local -i option
-	printf "1. Game Difficulty\n2. Score History\n3. Exit\n"
-	read -p 'Select Mode: ' option
-	case $option in 
-		1)
-			clear
-			game_mode_menu
-			;;
-		2)
-			clear
-			display_score_history
-			;;
-		3)
-			exit
-			;;
-		*)
-			printf "Option out of bounds, Please try again!\n"
-			;;
-	esac
-	menu
-}
-
 function game_mode_menu()
 {
 	local -i option
-	printf "1. Easy\n2. Medium\n3. Hard\n4. Custom\n"
-	read -p 'Select Mode: ' option
+	mapfile option <temp_difficulty.txt
+	if [ $option -eq 5 ]
+	then exit
+	fi
+	echo $option
 	initializer_function $option
 }
 
@@ -83,9 +54,11 @@ function game_mode_menu()
 
 function initializer_function()
 {
+	determine_current_mode $1
 	select_game_mode $1
 	pick_random_word_from_list
 	create_puzzle_string
+	store_global_variables
 	game_play
 }
 
@@ -181,9 +154,15 @@ function create_puzzle_string()
 # </summary>
 function game_play()
 {
-	clear
-	game_status_bar
-	get_input
+	local -i isexit
+	mapfile isexit < temp_difficulty.txt
+	if [ $isexit -eq 5 ]
+	then 
+		exit
+	fi
+	game
+	mapfile -t userin < userinput.txt
+	get_input $userin
 	check_chances
 	check_if_blank_spaces_remain
 }
@@ -195,15 +174,13 @@ function game_play()
 # </summary>
 function get_input()
 {
-	local input
-	read -p 'Input Alphabet: ' input
 	local find_status=false
 	for (( i=0; i<${#word[@]}; i++ ))
 	do
-		if [[ ${word[i]} == $input ]]
+		if [[ ${word[i]} == $1 ]]
 		then
 			find_status=true
-			puzzle_word[i]=$input
+			puzzle_word[i]=$1
 		fi
 	done
 	if [[ $find_status == false ]]
@@ -211,6 +188,7 @@ function get_input()
 		printf "Oops chance deducted!\n"
 		(( current_chances-- ))
 	fi
+	store_global_variables
 }
 
 
@@ -224,8 +202,9 @@ function check_chances()
 	if (( $current_chances < 0 ))
 	then
 		clear
-		printf "OOPs, You are hanged!\n"
-		wait_for_key_press
+		prompt
+		#printf "OOPs, You are hanged!\n"
+		#wait_for_key_press
 		iterate_to_next_round
 	fi
 }
@@ -375,7 +354,7 @@ function convert_string_to_array()
 
 function determine_current_mode()
 {
-	case $current_mode in 
+	case $1 in 
 		1)
 			current_mode_name="Easy"
 			;;
@@ -393,25 +372,6 @@ function determine_current_mode()
 			;;
 	esac
 }
-
-function print_keyboard()
-{
-	echo {a..z}
-}
-
-# <summary>
-#	* Determines current difficulty mode
-#	* Stores global variable data in a file
-#	* displays status bar
-# </summary>
-function game_status_bar()
-{
-	determine_current_mode
-	store_global_variables
-	echo "${puzzle_word[@]}		Current Chances Left: ${current_chances}	Current Mode: ${current_mode_name}	Current Score: ${current_score}	Current Round: ${current_round} \n"
-}
-
-
 function results()
 {
 	clear
@@ -420,27 +380,6 @@ function results()
 	echo "${current_user}		${current_score}" >> HighScores.txt
 	wait_for_key_press
 	menu
-}
-
-function wait_for_key_press()
-{
-	printf "Press any key to continue\n"
-	while [ true ] ; do
-		read -t 3 -n 1
-		if [ $? = 0 ]
-		then
-			break
-		else
-			printf "Waiting for the keypress\n"
-		fi
-	done
-}
-
-function display_score_history()
-{
-	mapfile score_history < HighScores.txt
-	printf "%s" "${score_history[@]}"
-	printf "\n"
 }
 
 function store_global_variables()
