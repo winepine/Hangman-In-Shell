@@ -1,5 +1,6 @@
 
 #!/bin/bash
+
 source gui.sh
 
 #	*** Documentation ***
@@ -202,7 +203,6 @@ function check_chances()
 {
 	if (( $current_chances < 0 ))
 	then
-		clear
 		prompt 'OOPS, You Are Hanged'
 		iterate_to_next_round
 	fi
@@ -283,7 +283,6 @@ function iterate_to_next_round()
 		if [[ $? == 1 ]]
 		then
 			prompt 'Congratulation promoted to next Difficulty!'
-			printf "Congratulation promoted to next mode!\n"
 			(( current_mode++ ))
 			if (( $current_mode >= 3 ))
 			then
@@ -291,7 +290,6 @@ function iterate_to_next_round()
 			fi
 		else
 			prompt 'Win percentage below 50, thus can''t be promoted to next Difficulty!'
-			printf "Win percentage below 50, thus can't be promoted to next round!\n"
 		fi
 	fi
 	current_chances=$total_chances
@@ -373,14 +371,12 @@ function determine_current_mode()
 			;;
 	esac
 }
+
 function results()
 {
-	printf "Total Score: ${current_score}\n"
-	printf "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
 	prompt "Total Score: ${current_score} | Total Rounds Won: ${total_rounds_won} ${total_rounds}"
-	main
 	echo "${current_score}" >> HighScores.txt
-	# Final result player ka show krne kebaad, start screen pe wapis la
+	main
 }
 
 function store_global_variables()
