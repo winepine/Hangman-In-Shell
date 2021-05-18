@@ -1,5 +1,13 @@
 #!/bin/bash
 source gui.sh
+
+# Missing Features:
+#		* LeaderBoard GUI & Button
+#		* Congratulation prompt for difficulty level [Line 291]
+#		* Prompt for repeating the difficulty level [Line 298]
+#		* End result high score prompt  [Line 380]
+
+
 #	*** Documentation ***
 #		* This program would be divided into following modules:
 #			* Global Variables
@@ -203,8 +211,6 @@ function check_chances()
 	then
 		clear
 		prompt
-		#printf "OOPs, You are hanged!\n"
-		#wait_for_key_press
 		iterate_to_next_round
 	fi
 }
@@ -374,19 +380,15 @@ function determine_current_mode()
 }
 function results()
 {
-	clear
 	printf "Total Score: ${current_score}\n"
 	printf "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
 	echo "${current_user}		${current_score}" >> HighScores.txt
-	wait_for_key_press
-	menu
+	# Final result player ka show krne kebaad, start screen pe wapis la
 }
 
 function store_global_variables()
 {
-	rm TempData
-	touch TempData
-	echo "${current_user}" >> TempData
+	echo "${current_user}" > TempData
 	echo "${current_chances}" >> TempData
 	echo "${current_round}" >> TempData
 	echo "${current_score}" >> TempData
