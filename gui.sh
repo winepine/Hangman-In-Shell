@@ -1,13 +1,14 @@
 #!/bin/bash
 # ****************************************
 # *** FILE INCLUDES FOLLOWING FUNCTIONS
-# *** def_styles  | Line 27
-# *** buttonprint | Line 47
-# *** startscreen | Line 71
-# *** game        | Line 112
-# *** Difficulty  | Line 157
-# *** Prompt      | Line 206
-# *** Main        | Line 237
+# *** def_styles   | Line 28
+# *** buttonprint  | Line 48
+# *** startscreen  | Line 72
+# *** game         | Line 118
+# *** Difficulty   | Line 163
+# *** Prompt       | Line 212
+# *** Leaderboard  | Line 253
+# *** Main         | Line 285
 # ****************************************
 
 #GLOBALS
@@ -49,7 +50,7 @@ buttonprint(){
     do
         echo '<button width-request="70">
             <label>'$x'</label>
-            <action>echo '$x' > userinput.txt</action>
+            <action>echo '$x' > userinput</action>
             <action>Exit:Quitted_Successfully</action>
         </button>'
         case $x in
@@ -86,14 +87,18 @@ export MAIN_DIALOG='
             <label>"<b>HANGMAN</b>"</label>
         </text>
         <hbox>
-            <button width-request="450">
+            <button width-request="200">
                 <label>Play</label>
                 <action>gtkdialog --program difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
             </button>
-            <button width-request="450">
+            <button width-request="350">
+                <label>Leaderboard</label>
+                <action>gtkdialog --program leaderboard</action>
+            </button>
+            <button width-request="200">
                 <label>Quit</label>
-                <action>echo 5 > temp_difficulty.txt</action>
+                <action>echo 5 > temp_difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
             </button>
         </hbox>
@@ -139,7 +144,7 @@ export game='
     </hbox>
         <button width-request="50">
             <label>Quit</label>
-            <action>echo 5 > temp_difficulty.txt</action>
+            <action>echo 5 > temp_difficulty</action>
             <action>Exit:Quitted_Successfully</action>
         </button>
     </vbox>
@@ -174,22 +179,22 @@ export difficulty='
         <vbox>
             <button width-request="70">
                 <label>'Easy'</label>
-                <action>echo 1 > temp_difficulty.txt</action>
+                <action>echo 1 > temp_difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
             <button width-request="70">
                 <label>'Medium'</label>
-                <action>echo 2 > temp_difficulty.txt</action>
+                <action>echo 2 > temp_difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
             <button width-request="70">
                 <label>'Hard'</label>
-                <action>echo 3 > temp_difficulty.txt</action>
+                <action>echo 3 > temp_difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
             <button width-request="70">
                 <label>'Custom'</label>
-                <action>echo 4 > temp_difficulty.txt</action>
+                <action>echo 4 > temp_difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
         </vbox>
@@ -201,7 +206,7 @@ export difficulty='
 # ----------------------------------------------------
 
 # <summary>
-#  *Mini Prompt When User Is hanged
+#  *Mini Prompt
 # </summary>
 prompt(){
 export prompt=' 
@@ -212,31 +217,76 @@ export prompt='
     border-width="50"
     name="MyWindow">
 <vbox>
-<hbox>
+<hbox>'
+if [[ "$1" == "OOPS, You Are Hanged" ]]
+then
+    prompt=${prompt}'
         <pixmap>
             <input file>hanged.png</input>
             <height>120</height>
         	<width>120</width>
-        </pixmap>
+        </pixmap>'
+    fi
+prompt=${prompt}'        
         <text name="MyText" use-markup="true">
-            <label>"<b> OOPS, You Are Hanged.</b>"</label>
+            <label>"<b> '$1'</b>"</label>
         </text>
         </hbox>
-        <hbox>
-            <button width-request="140">
-                <label>'OK'</label>
+        <vbox>
+            <button width-request="250">
+                <label>'Continue'</label>
                 <action>Exit:Quitted_Successfully</action>
             </button>
-        </hbox>
+        </vbox>
 </vbox>
 </window>
 '
 gtkdialog --program prompt
 }
 
+# ----------------------------------------------------
+
+# <summary>
+#  * Leaderboard Layout
+# </summary>
+leaderboard(){
+export leaderboard=' 
+<window 
+    title="HANGMAN"
+    default-width="900"
+    default-height="600"
+    border-width="100"
+    name="MyWindow">
+<vbox>
+        <pixmap>
+            <input file>hang.png</input>
+            <height>120</height>
+        	<width>120</width>
+        </pixmap>       
+        <frame Leaderboard>
+        <vbox>
+        <text name="MyText" use-markup="true">
+            <label>"<b>'"`cat HighScores`"'</b>"</label>
+        </text>
+        </vbox>
+        </frame>
+        <vbox>
+            <button width-request="250">
+                <label>'Back'</label>
+                <action>Exit:Quitted_Successfully</action>
+            </button>
+        </vbox>
+</vbox>
+</window>
+'
+}
+#-----------------------------------------------------
 main(){
+    leaderboard
     def_styles
     difficulty
     startscreen
     game_mode_menu
 }
+
+

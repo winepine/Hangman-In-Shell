@@ -1,12 +1,6 @@
+
 #!/bin/bash
 source gui.sh
-
-# Missing Features:
-#		* LeaderBoard GUI & Button
-#		* Congratulation prompt for difficulty level [Line 291]
-#		* Prompt for repeating the difficulty level [Line 298]
-#		* End result high score prompt  [Line 380]
-
 
 #	*** Documentation ***
 #		* This program would be divided into following modules:
@@ -45,11 +39,10 @@ used_words=()
 function game_mode_menu()
 {
 	local -i option
-	mapfile option <temp_difficulty.txt
+	mapfile option <temp_difficulty
 	if [ $option -eq 5 ]
 	then exit
 	fi
-	echo $option
 	initializer_function $option
 }
 
@@ -163,13 +156,13 @@ function create_puzzle_string()
 function game_play()
 {
 	local -i isexit
-	mapfile isexit < temp_difficulty.txt
+	mapfile isexit < temp_difficulty
 	if [ $isexit -eq 5 ]
 	then 
 		exit
 	fi
 	game
-	mapfile -t userin < userinput.txt
+	mapfile -t userin < userinput
 	get_input $userin
 	check_chances
 	check_if_blank_spaces_remain
@@ -210,7 +203,7 @@ function check_chances()
 	if (( $current_chances < 0 ))
 	then
 		clear
-		prompt
+		prompt 'OOPS, You Are Hanged'
 		iterate_to_next_round
 	fi
 }
@@ -289,6 +282,7 @@ function iterate_to_next_round()
 		check_if_should_be_promoted_to_next_mode
 		if [[ $? == 1 ]]
 		then
+			prompt 'Congratulation promoted to next Difficulty!'
 			printf "Congratulation promoted to next mode!\n"
 			(( current_mode++ ))
 			if (( $current_mode >= 3 ))
@@ -296,6 +290,7 @@ function iterate_to_next_round()
 				results
 			fi
 		else
+			prompt 'Win percentage below 50, thus can''t be promoted to next Difficulty!'
 			printf "Win percentage below 50, thus can't be promoted to next round!\n"
 		fi
 	fi
@@ -382,7 +377,8 @@ function results()
 {
 	printf "Total Score: ${current_score}\n"
 	printf "Total Rounds Won: ${total_rounds_won}/${total_rounds}\n"
-	echo "${current_user}		${current_score}" >> HighScores.txt
+	prompt 'Total Score: ${current_score} | Total Rounds Won: ${total_rounds_won} ${total_rounds}'
+	echo "${current_score}" >> HighScores.txt
 	# Final result player ka show krne kebaad, start screen pe wapis la
 }
 
