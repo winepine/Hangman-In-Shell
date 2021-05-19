@@ -80,8 +80,8 @@ export MAIN_DIALOG='
     <vbox>
         <pixmap>
             <input file>hang.png</input>
-            <height>350</height>
-        	<width>350</width>
+            <height>300</height>
+        	<width>300</width>
         </pixmap>
         <text name="MyText" use-markup="true">
             <label>"<b>HANGMAN</b>"</label>
@@ -102,6 +102,9 @@ export MAIN_DIALOG='
                 <action>Exit:Quitted_Successfully</action>
             </button>
         </hbox>
+        <text name="MyText" use-markup="true">
+            <label>"Created By Eqan And Basit"</label>
+        </text>
     </vbox>
 </window>
 '
@@ -266,7 +269,7 @@ export leaderboard='
         <frame Leaderboard>
         <vbox>
         <text name="MyText" use-markup="true">
-            <label>"<b>'"`cat HighScores`"'</b>"</label>
+            <label>"<b>'"`cat HighScores.txt`"'</b>"</label>
         </text>
         </vbox>
         </frame>

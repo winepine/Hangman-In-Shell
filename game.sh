@@ -19,7 +19,7 @@ source gui.sh
 
 current_user=""
 total_rounds_won=0
-total_rounds_per_mode=1
+total_rounds_per_mode=3
 current_round=0
 total_chances=6
 current_chances=$total_chances
