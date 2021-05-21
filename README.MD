@@ -1,5 +1,5 @@
-![Puzzle](/Screenshots/puzzle.jpeg)
+![Puzzle](/Screenshots/Puzzle.jpeg)
 
 | Main Page         | Difficulty   |
 |:-------------:|:-------------:|
-|![](/Screenshots/Main\ Page.jpeg)|![](/Screenshots/Difficulty.jpeg)|
+|![](/Screenshots/Main%20Page.jpg)|![](/Screenshots/Difficulty.jpeg)|
