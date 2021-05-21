@@ -116,7 +116,7 @@ function create_puzzle_string()
 	local -i number_of_blank_spaces=0
 	for ((i=0; i<${#word[@]}; i++))
 	do
-		for letter in {a..z}
+		for letter in {{a..z},{A..Z}}
 			do
 			if [[ $letter == ${word[i]} ]]
 			then
