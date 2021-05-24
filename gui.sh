@@ -86,6 +86,9 @@ export MAIN_DIALOG='
         <text name="MyText" use-markup="true">
             <label>"<b>HANGMAN</b>"</label>
         </text>
+        <text name="MyText" use-markup="true">
+            <label>"Created By Eqan And Basit"</label>
+        </text>
         <hbox>
             <button width-request="200">
                 <label>Play</label>
@@ -102,9 +105,6 @@ export MAIN_DIALOG='
                 <action>Exit:Quitted_Successfully</action>
             </button>
         </hbox>
-        <text name="MyText" use-markup="true">
-            <label>"Created By Eqan And Basit"</label>
-        </text>
     </vbox>
 </window>
 '
