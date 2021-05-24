@@ -259,9 +259,9 @@ function select_game_mode()
 			;;
 		*)
 			printf "Option out of bounds, Please try again!\n"
+			game_mode_menu
 			;;
 	esac
-	game_mode_menu
 }
 
 
@@ -309,15 +309,19 @@ function add_current_score()
 	case $current_mode in 
 		1)
 			(( current_score+=10 ))
+			return
 			;;
 		2)
 			(( current_score+=20 ))
+			return
 			;;
 		3)
 			(( current_score+=30 ))
+			return
 			;;
 		*)
 			(( current_score+=15 ))
+			return
 			;;
 	esac
 }
@@ -360,15 +364,19 @@ function determine_current_mode()
 	case $1 in 
 		1)
 			current_mode_name="Easy"
+			return
 			;;
 		2)
 			current_mode_name="Medium"
+			return
 			;;
 		3)
 			current_mode_name="Hard"
+			return
 			;;
 		4)
 			current_mode_name="Custom"
+			return
 			;;
 	esac
 }
