@@ -308,6 +308,10 @@ main(){
     def_styles
     difficulty
     startscreen
+    if ! grep -q '[^[:space:]]' "temp_name"; then
+        prompt "Please Enter Your Name!"
+        gtkdialog --program difficulty
+    fi
     game_mode_menu
 }
 
