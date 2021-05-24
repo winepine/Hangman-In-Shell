@@ -383,8 +383,9 @@ function determine_current_mode()
 
 function results()
 {
+	mapfile usr_name <temp_name
 	prompt "Total Score: ${current_score} | Total Rounds Won: ${total_rounds_won} ${total_rounds}"
-	echo "${current_score}" >> HighScores.txt
+	echo "$usr_name -> ${current_score}" >> HighScores.txt
 	main
 }
 

@@ -132,6 +132,9 @@ export game='
         	<width>150</width>
         </pixmap>
         <text name="MyText" use-markup="true">
+            <label>"<b>Player Name : '"`cat temp_name`"'</b>"</label>
+        </text>
+        <text name="MyText" use-markup="true">
             <label>"<b>Chances Left : '"`sed -n "2p" TempData`"' | Current Round : '"`sed -n "3p" TempData`"'</b>"</label>
         </text>
         <text name="MyText" use-markup="true">
@@ -176,30 +179,46 @@ export difficulty='
             <height>90</height>
         	<width>90</width>
         </pixmap>
-        <text name="MyText" use-markup="true">
-            <label>"<b>SELECT DIFFICULTY</b>"</label>
-        </text>
         <vbox>
-            <button width-request="70">
+        <text name="MyText" use-markup="true">
+            <label>"<b>Enter UserName</b>"</label>
+        </text>
+        <entry>
+            <variable>usr_name</variable>
+        </entry>
+        </vbox>
+        <vbox>
+        <text name="MyText" use-markup="true">
+            <label>"<b>Select Difficulty</b>"</label>
+        </text>
+        <hbox>
+            <button width-request="350">
                 <label>'Easy'</label>
                 <action>echo 1 > temp_difficulty</action>
+                <action>echo $usr_name >temp_name</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
-            <button width-request="70">
+            <button width-request="350">
                 <label>'Medium'</label>
                 <action>echo 2 > temp_difficulty</action>
+                <action>echo $usr_name >temp_name</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
-            <button width-request="70">
+            </hbox>
+            <hbox>
+            <button width-request="350">
                 <label>'Hard'</label>
                 <action>echo 3 > temp_difficulty</action>
+                <action>echo $usr_name >temp_name</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
-            <button width-request="70">
+            <button width-request="350">
                 <label>'Custom'</label>
                 <action>echo 4 > temp_difficulty</action>
+                <action>echo -n $usr_name >temp_name</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
+            </hbox>
         </vbox>
 </vbox>
 </window>
