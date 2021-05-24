@@ -237,27 +237,31 @@ function select_game_mode()
 			total_rounds=$(( $total_rounds_per_mode * 3 ))
 			mapfile -t words_list < Easy.txt
 			current_mode=1
+			return
 			;;
 		2)
 			total_rounds=$(( $total_rounds_per_mode * 2 ))
 			mapfile -t words_list < Medium.txt
 			current_mode=2
+			return
 			;;
 		3)
 			total_rounds=$total_rounds_per_mode
 			mapfile -t words_list < Hard.txt
 			current_mode=3
+			return
 			;;
 		4)
 			total_rounds=$total_rounds_per_mode
 			mapfile -t words_list < Custom.txt
 			current_mode=4
+			return
 			;;
 		*)
 			printf "Option out of bounds, Please try again!\n"
-			game_mode_menu
 			;;
 	esac
+	game_mode_menu
 }
 
 
@@ -365,9 +369,6 @@ function determine_current_mode()
 			;;
 		4)
 			current_mode_name="Custom"
-			;;
-		*)
-			current_mode_name="Unknown"
 			;;
 	esac
 }

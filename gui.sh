@@ -195,11 +195,11 @@ export difficulty='
                 <action>echo 3 > temp_difficulty</action>
                 <action>Exit:Quitted_Successfully</action>
                 </button>
-            
-
-
-
-            
+            <button width-request="70">
+                <label>'Custom'</label>
+                <action>echo 4 > temp_difficulty</action>
+                <action>Exit:Quitted_Successfully</action>
+                </button>
         </vbox>
 </vbox>
 </window>
