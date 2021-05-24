@@ -2,4 +2,4 @@
 
 | Main Page         | Difficulty   |
 |:-------------:|:-------------:|
-|![](/Screenshots/Main%20Page.jpg)|![](/Screenshots/Difficulty.jpeg)|
+|![](/Screenshots/Main%20Page.jpg)|![](/Screenshots/Difficulty.png)|
